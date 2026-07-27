@@ -15,7 +15,7 @@
     import mermaid from "https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.esm.min.mjs";
     const settings = localStorage.getItem("theme") === "dark" ?
         {
-            startOnLoad: true,
+            startOnLoad: false,
             theme: "dark",
             darkMode: true,
             themeVariables: {
@@ -24,7 +24,7 @@
         }
         :
         {
-            startOnLoad: true,
+            startOnLoad: false,
             theme: "base",
             darkMode: false,
             themeVariables: {
@@ -33,5 +33,10 @@
         }
     ;
     mermaid.initialize(settings);
+    // Wait for webfonts (Inter) to finish loading before rendering.
+    // Otherwise mermaid sizes each label's foreignObject using fallback
+    // font metrics, and Inter's wider glyphs get clipped once it swaps in.
+    await document.fonts.ready;
+    await mermaid.run();
 </script>
 {{ end }}
